@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>【螃蟹是也的蜗牛地图】</title>
     <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <script>
         window._AMapSecurityConfig = {
             securityJsCode: 'a4d0b6007908ab8cfb6d9515a24a373b'
@@ -19,35 +20,40 @@
         }
 
         :root {
-            --green-50: #f0fdf4;
-            --green-100: #dcfce7;
-            --green-200: #bbf7d0;
-            --green-300: #86efac;
-            --green-400: #4ade80;
-            --green-500: #22c55e;
-            --green-600: #16a34a;
-            --green-700: #15803d;
-            --green-800: #166534;
-            --green-900: #14532d;
-            --white: #ffffff;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --red-500: #ef4444;
-            --red-600: #dc2626;
-            --radius-sm: 10px;
-            --radius: 14px;
-            --radius-lg: 20px;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-            --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
-            --tab-height: 64px;
+            /* 莫兰迪绿色系（冷调不偏黄） */
+            --moss-50: #F5F7F5;
+            --moss-100: #E8F0E9;
+            --moss-200: #D1DDD4;
+            --moss-300: #A7BDAE;
+            --moss-400: #7D9E88;
+            --moss-500: #5A7D66;
+            --moss-600: #4A6755;
+            --moss-700: #3D5A45;
+            --moss-800: #2F4836;
+            --moss-900: #233829;
+            /* 极简灰阶 */
+            --white: #FFFFFF;
+            --off-white: #FAFBFA;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F4;
+            --gray-200: #E5E7E7;
+            --gray-300: #D1D5D5;
+            --gray-400: #9CA4A0;
+            --gray-500: #6B7470;
+            --gray-600: #4B5552;
+            --gray-700: #37413F;
+            --gray-800: #1F2927;
+            --red-500: #D4636F;
+            --red-600: #C14B57;
+            /* 极简圆角 */
+            --radius-sm: 4px;
+            --radius: 6px;
+            --radius-lg: 8px;
+            /* 极淡阴影 */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --tab-height: 60px;
         }
 
         html, body {
@@ -57,52 +63,59 @@
             padding: 0;
         }
 
+        html {
+            font-size: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
         body {
-            font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
-            background: var(--green-50);
-            color: var(--gray-800);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+            background: var(--off-white);
+            color: var(--gray-700);
             -webkit-tap-highlight-color: transparent;
-            margin: 0;
-            padding: 0;
         }
 
         .app-header {
-            background: linear-gradient(135deg, var(--green-600), var(--green-500));
+            background: var(--moss-700);
             color: var(--white);
-            padding: 14px 20px;
+            padding: 16px 20px 12px 20px;
             text-align: center;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 12px rgba(22, 163, 74, 0.25);
+            border-bottom: 1px solid var(--moss-800);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .app-header h1 {
-            font-size: 1.35rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
+            font-size: 1.15rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
             margin: 0;
+            color: var(--white);
         }
 
         .app-header .subtitle {
-            font-size: 0.85rem;
-            font-weight: 400;
-            opacity: 0.9;
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.85);
             margin: 0;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.02em;
         }
 
         .page {
             display: none;
-            padding: 16px 16px calc(var(--tab-height) + 24px) 16px;
+            padding: 12px 16px calc(var(--tab-height) + 16px) 16px;
             max-width: 600px;
             margin: 0 auto;
-            min-height: calc(100vh - 56px - var(--tab-height));
+            min-height: calc(100vh - 60px - var(--tab-height));
         }
 
         .page.active {
@@ -128,15 +141,16 @@
             left: 0;
             right: 0;
             height: var(--tab-height);
-            background: var(--white);
+            background: #FFFFFF;
             display: flex;
-            border-top: 1px solid var(--gray-200);
-            z-index: 100;
-            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+            border-top: 1px solid #D1D5D5;
+            z-index: 1000;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .tab-item {
-            flex: 1;
+            width: calc(100% / 4);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -145,29 +159,34 @@
             border: none;
             background: none;
             cursor: pointer;
-            color: var(--gray-400);
-            font-size: 0.75rem;
-            transition: color 0.2s;
-            font-family: inherit;
+            color: #9CA4A0;
+            font-size: 12px;
+            line-height: 1.2;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 400;
+            padding: 0;
+            margin: 0;
         }
 
         .tab-item.active {
-            color: var(--green-600);
+            color: var(--moss-600);
         }
 
         .tab-item svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
+            display: block;
+            flex-shrink: 0;
         }
 
         /* Form */
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .form-group-row {
             display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 14px;
         }
         
         .form-group-half {
@@ -175,11 +194,12 @@
             margin-bottom: 0;
         }
 
-        .form-group label {
+        .form-group label,
+        .form-group-half label {
             display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--gray-700);
+            font-size: 0.8rem !important;
+            font-weight: 400 !important;
+            color: var(--gray-600) !important;
             margin-bottom: 6px;
         }
 
@@ -190,40 +210,41 @@
 
         .form-input {
             width: 100%;
-            padding: 14px;
-            border: 2px solid var(--gray-200);
+            padding: 10px 12px;
+            border: 1px solid var(--gray-200);
             border-radius: var(--radius-sm);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-family: inherit;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s;
             background: var(--white);
-            color: var(--gray-800);
+            color: var(--gray-700);
+            font-weight: 300;
         }
 
         .form-input:focus {
-            border-color: var(--green-400);
-            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15);
+            border-color: var(--moss-400);
         }
 
         .form-input::placeholder {
             color: var(--gray-400);
+            font-weight: 300;
         }
 
         /* Image Upload */
         .image-upload-area {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .image-preview-item {
-            width: 80px;
-            height: 80px;
+            width: 75px;
+            height: 75px;
             border-radius: var(--radius-sm);
             overflow: hidden;
             position: relative;
-            border: 2px solid var(--gray-200);
+            border: 1px solid var(--gray-200);
             flex-shrink: 0;
             cursor: grab;
         }
@@ -234,7 +255,7 @@
         
         .image-preview-item.dragging {
             opacity: 0.5;
-            border-color: var(--green-400);
+            border-color: var(--moss-400);
         }
 
         .image-preview-item img {
@@ -247,14 +268,14 @@
             position: absolute;
             top: 2px;
             right: 2px;
-            width: 30px;
-            height: 30px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             line-height: 1;
             display: flex;
             align-items: center;
@@ -262,9 +283,9 @@
         }
 
         .image-upload-trigger {
-            width: 80px;
-            height: 80px;
-            border: 2px dashed var(--gray-300);
+            width: 75px;
+            height: 75px;
+            border: 1px dashed var(--gray-300);
             border-radius: var(--radius-sm);
             display: flex;
             flex-direction: column;
@@ -278,13 +299,13 @@
         }
 
         .image-upload-trigger:hover {
-            border-color: var(--green-400);
-            color: var(--green-500);
+            border-color: var(--moss-400);
+            color: var(--moss-600);
         }
 
         .image-upload-trigger svg {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             margin-bottom: 2px;
         }
 
@@ -304,37 +325,36 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 12px 28px;
-            min-height: 44px;
+            padding: 11px 24px;
+            min-height: 40px;
             border: none;
             border-radius: var(--radius);
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 400;
             cursor: pointer;
             font-family: inherit;
             transition: all 0.2s;
             width: 100%;
+            letter-spacing: 0.3px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--green-500), var(--green-600));
+            background: var(--moss-600);
             color: var(--white);
-            box-shadow: var(--shadow);
         }
 
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-lg);
+            background: var(--moss-700);
         }
 
         .btn-primary:active {
-            transform: translateY(0);
+            background: var(--moss-800);
         }
 
         .btn-danger {
             background: var(--white);
             color: var(--red-500);
-            border: 2px solid var(--red-500);
+            border: 1px solid var(--red-500);
         }
 
         .btn-danger:hover {
@@ -344,55 +364,49 @@
 
         .btn-back {
             background: var(--white);
-            color: var(--gray-700);
-            border: 2px solid var(--gray-200);
+            color: var(--gray-600);
+            border: 1px solid var(--gray-200);
             width: auto;
-            padding: 10px 20px;
-        }
-
-        .search-box {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: var(--green-50);
-            padding: 16px;
-            margin: -16px -16px 16px -16px;
+            padding: 8px 16px;
         }
 
         .map-search-bar {
             position: absolute;
-            top: 56px; /* 避开app-header的高度 */
+            top: 60px; /* 避开app-header的高度 */
             left: 0;
             right: 0;
             z-index: 100;
-            background: var(--green-600);
-            padding: 12px 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            background: var(--white);
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--gray-100);
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 44px 12px 16px;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 10px 40px 10px 14px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: var(--white);
+            transition: border-color 0.2s;
+            background: var(--off-white);
+            font-weight: 300;
+            min-height: 40px;
+            box-sizing: border-box;
         }
 
         .search-input:focus {
-            border-color: var(--green-400);
-            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+            border-color: var(--moss-400);
+            background: var(--white);
         }
 
         .map-search-bar .search-input {
-            background: rgba(255,255,255,0.95);
-            border-color: rgba(255,255,255,0.3);
+            background: var(--white);
+            border-color: var(--gray-200);
         }
 
         .map-search-bar .search-input:focus {
-            border-color: var(--green-300);
+            border-color: var(--moss-400);
         }
 
         .search-clear-btn {
@@ -437,36 +451,36 @@
         .card-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .card {
             background: var(--white);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-100);
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s;
             display: flex;
-            gap: 14px;
-            padding: 12px;
+            gap: 12px;
+            padding: 10px;
         }
 
         .card:active {
-            transform: scale(0.98);
+            border-color: var(--moss-200);
         }
 
         .card:hover {
-            box-shadow: var(--shadow);
+            border-color: var(--moss-300);
         }
 
         .card-thumb {
-            width: 72px;
-            height: 72px;
+            width: 68px;
+            height: 68px;
             border-radius: var(--radius-sm);
             overflow: hidden;
             flex-shrink: 0;
-            background: var(--gray-100);
+            background: var(--gray-50);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -480,8 +494,8 @@
         }
 
         .card-thumb-placeholder svg {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             color: var(--gray-300);
         }
 
@@ -491,21 +505,33 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 4px;
+            gap: 3px;
         }
 
-        .card-title {
-            font-size: 1rem;
-            font-weight: 700;
+        .card-chinese-name {
+            font-size: 0.95rem;
+            font-weight: 500;
             color: var(--gray-800);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-family: inherit;
+        }
+
+        .card-latin-name {
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: var(--gray-500);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: inherit;
+            font-style: italic;
         }
 
         .card-meta {
-            font-size: 0.8rem;
-            color: var(--gray-500);
+            font-size: 0.75rem;
+            color: var(--gray-400);
             display: flex;
             align-items: center;
             gap: 4px;
@@ -541,46 +567,57 @@
 
         /* Detail Page */
         .detail-section {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .detail-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
         .detail-label {
             font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--gray-500);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
+            font-weight: 400;
+            color: var(--gray-600);
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
         }
 
         .detail-value {
-            font-size: 1.05rem;
-            color: var(--gray-800);
+            font-size: 0.95rem;
+            color: var(--gray-700);
+            font-weight: 300;
+            line-height: 1.5;
         }
 
         .detail-value.large {
-            font-size: 1.3rem;
-            font-weight: 700;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--moss-800);
         }
 
         .detail-images {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 16px;
         }
 
         .detail-image {
             aspect-ratio: 1;
             border-radius: var(--radius-sm);
             overflow: hidden;
-            background: var(--gray-100);
+            background: var(--gray-50);
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: opacity 0.2s;
+            border: 1px solid var(--gray-100);
         }
 
         .detail-image:active {
-            transform: scale(0.95);
+            opacity: 0.8;
         }
 
         .detail-image img {
@@ -592,6 +629,7 @@
         .detail-actions {
             display: flex;
             gap: 10px;
+            padding-top: 8px;
         }
 
         /* Image Viewer Overlay */
@@ -673,14 +711,14 @@
         }
 
         .btn-map-picker {
-            width: 50px;
-            min-width: 50px;
-            min-height: 44px;
-            border: 2px solid var(--gray-200);
+            width: 48px;
+            min-width: 48px;
+            min-height: 42px;
+            border: 1px solid var(--gray-200);
             border-radius: var(--radius-sm);
             background: var(--white);
             cursor: pointer;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -689,12 +727,12 @@
         }
 
         .btn-map-picker:hover {
-            border-color: var(--green-400);
-            background: var(--green-50);
+            border-color: var(--moss-400);
+            background: var(--moss-50);
         }
 
         .btn-map-picker:active {
-            background: var(--green-100);
+            background: var(--moss-100);
         }
 
         /* Map Modal */
@@ -715,18 +753,20 @@
             display: flex;
             flex-direction: column;
             padding: 10px 16px;
-            background: var(--green-600);
-            color: var(--white);
+            background: var(--white);
+            color: var(--gray-800);
             flex-shrink: 0;
             gap: 8px;
+            border-bottom: 1px solid var(--gray-100);
         }
 
         .map-modal-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 0.95rem;
+            color: var(--moss-700);
         }
 
         .map-search-row {
@@ -782,29 +822,30 @@
 
         .map-search-result-item:hover,
         .map-search-result-item.active {
-            background: var(--green-50);
+            background: var(--moss-50);
         }
 
         .map-search-result-item .result-name {
-            font-weight: 600;
+            font-weight: 500;
             color: var(--gray-800);
         }
 
         .map-search-result-item .result-addr {
             font-size: 0.75rem;
-            color: var(--gray-400);
+            color: var(--gray-500);
             margin-top: 2px;
+            font-weight: 300;
         }
 
         .map-modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius-sm);
+            background: var(--gray-100);
+            color: var(--gray-700);
             border: none;
             cursor: pointer;
-            font-size: 22px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -815,17 +856,18 @@
             flex: 1;
             min-height: 0;
             width: 100%;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 118px);
             background: #333;
         }
 
         .map-hint {
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--gray-500);
             padding: 8px 16px;
             flex-shrink: 0;
             background: var(--gray-50);
+            font-weight: 300;
         }
 
         #map-page {
@@ -845,13 +887,13 @@
 
         .map-page-search {
             position: absolute;
-            top: 56px;
+            top: 80px;
             left: 0;
             right: 0;
             z-index: 100;
-            background: var(--green-50);
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--gray-200);
+            background: #F0F2F1;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--gray-100);
             display: flex;
             align-items: center;
         }
@@ -860,11 +902,17 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            background: var(--green-50);
-            padding: 16px;
-            margin: -16px -16px 16px -16px;
+            background: var(--white);
+            width: min(100%, 600px);
+            margin: -12px auto 12px auto;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .search-box-inner {
+            padding: 12px 16px;
             display: flex;
             align-items: center;
+            gap: 10px;
         }
 
         /* Filter Dropdown */
@@ -877,14 +925,14 @@
             position: absolute;
             top: 100%;
             right: 0;
-            width: 280px;
+            width: 260px;
             background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid var(--gray-100);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             z-index: 300;
-            margin-top: 4px;
-            max-height: 320px;
+            margin-top: 6px;
+            max-height: 300px;
             overflow: hidden;
             flex-direction: column;
         }
@@ -898,23 +946,24 @@
             align-items: center;
             justify-content: space-between;
             padding: 10px 12px;
-            border-bottom: 1px solid var(--gray-200);
-            font-weight: 600;
+            border-bottom: 1px solid var(--gray-100);
+            font-weight: 500;
             font-size: 0.9rem;
+            color: var(--moss-700);
         }
 
         .filter-dropdown-close {
             width: 24px;
             height: 24px;
-            border-radius: 4px;
+            border-radius: var(--radius-sm);
             border: none;
             background: transparent;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            color: var(--gray-600);
+            font-size: 1rem;
+            color: var(--gray-500);
         }
 
         .filter-dropdown-body {
@@ -925,15 +974,16 @@
 
         .filter-dropdown-footer {
             padding: 8px 12px;
-            border-top: 1px solid var(--gray-200);
+            border-top: 1px solid var(--gray-100);
             display: flex;
             gap: 8px;
         }
 
         .filter-dropdown-footer .btn {
             flex: 1;
-            padding: 8px 12px;
+            padding: 7px 12px;
             font-size: 0.85rem;
+            min-height: 36px;
         }
 
         .filter-family {
@@ -946,8 +996,9 @@
             gap: 6px;
             padding: 4px 0;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 400;
             font-size: 0.85rem;
+            color: var(--gray-700);
         }
 
         .filter-family-toggle {
@@ -958,7 +1009,7 @@
             justify-content: center;
             transition: transform 0.2s;
             font-size: 0.8rem;
-            color: var(--gray-500);
+            color: var(--gray-400);
         }
 
         .filter-family-toggle.expanded {
@@ -985,16 +1036,17 @@
         .map-search-input {
             width: 100%;
             padding: 10px 40px 10px 12px;
-            border: 2px solid var(--gray-200);
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
             outline: none;
             background: white;
             transition: border-color 0.2s;
+            font-weight: 300;
         }
 
         .map-search-input:focus {
-            border-color: var(--green-400);
+            border-color: var(--moss-400);
         }
 
         .map-search-clear {
@@ -1005,9 +1057,9 @@
             width: 24px;
             height: 24px;
             border: none;
-            background: var(--gray-200);
-            color: var(--gray-600);
-            border-radius: 50%;
+            background: var(--gray-100);
+            color: var(--gray-500);
+            border-radius: var(--radius-sm);
             cursor: pointer;
             font-size: 16px;
             line-height: 1;
@@ -1025,7 +1077,7 @@
             border-radius: 0;
             width: 100%;
             height: 100%;
-            padding-top: 120px;
+            padding-top: 136px;
             padding-bottom: 120px;
             box-sizing: border-box;
         }
@@ -1039,6 +1091,10 @@
             overflow: visible !important;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
+        
+        .amap-info-close {
+            display: none !important;
+        }
 
         .amap-info-sharp {
             z-index: 1;
@@ -1048,7 +1104,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 90px;
+            width: 90px;
             cursor: pointer;
         }
 
@@ -1059,7 +1115,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px 8px 0 0;
+            border-radius: 0;
             overflow: hidden;
         }
 
@@ -1067,7 +1123,7 @@
             width: 90px;
             height: 120px;
             object-fit: cover;
-            border-radius: 8px 8px 0 0;
+            border-radius: 0;
         }
 
         .map-info-placeholder {
@@ -1082,23 +1138,23 @@
             align-items: center;
             justify-content: center;
             background: var(--gray-100);
-            border-radius: 8px 8px 0 0;
+            border-radius: 0;
             font-size: 24px;
         }
 
         .map-info-name {
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 600;
             color: var(--gray-800);
             text-align: center;
             padding: 6px 10px;
-            max-width: 120px;
+            width: 90px;
+            box-sizing: border-box;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             background: #fff;
             border-radius: 0 0 8px 8px;
-            width: 100%;
         }
 
         /* Confirm Dialog */
@@ -1118,30 +1174,32 @@
 
         .confirm-dialog {
             background: var(--white);
-            border-radius: var(--radius-lg);
-            padding: 28px 24px 20px 24px;
-            max-width: 360px;
+            border-radius: var(--radius);
+            padding: 24px 20px 18px 20px;
+            max-width: 320px;
             width: calc(100vw - 48px);
             box-shadow: var(--shadow-lg);
             text-align: center;
+            border: 1px solid var(--gray-100);
         }
 
         .confirm-dialog p {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--gray-700);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             line-height: 1.5;
+            font-weight: 300;
         }
 
         .confirm-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .confirm-actions .btn {
             flex: 1;
-            padding: 10px 20px;
-            min-height: 44px;
+            padding: 9px 18px;
+            min-height: 40px;
         }
 
         .btn-confirm-no {
@@ -1154,12 +1212,12 @@
         }
 
         .btn-confirm-yes {
-            background: linear-gradient(135deg, var(--green-500), var(--green-600));
+            background: var(--moss-600);
             color: var(--white);
         }
 
         .btn-confirm-yes:hover {
-            background: linear-gradient(135deg, var(--green-600), var(--green-700));
+            background: var(--moss-700);
         }
 
         @media (max-width: 480px) {
@@ -1222,6 +1280,114 @@
             .detail-images {
                 grid-template-columns: repeat(4, 1fr);
                 gap: 12px;
+            }
+        }
+
+        /* Stats Page */
+        #stats-page {
+            padding: 12px 16px calc(var(--tab-height) + 16px) 16px;
+            max-width: none;
+            width: 100%;
+        }
+
+        .stats-header {
+            margin-bottom: 16px;
+        }
+
+        .stats-cards {
+            display: flex;
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--gray-100);
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--moss-600);
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        .stats-map-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats-map-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--moss-700);
+        }
+
+        .stats-map-wrapper {
+            position: relative;
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+            overflow: hidden;
+        }
+
+        #stats-echarts {
+            width: 100%;
+            height: 400px;
+        }
+
+        .stats-legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-100);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: var(--gray-600);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 14px;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 480px) {
+            #stats-page {
+                padding: 10px;
+            }
+            
+            #stats-echarts {
+                height: 300px;
+            }
+            
+            .stats-legend {
+                gap: 10px;
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -1306,24 +1472,26 @@
 
     <!-- List Page -->
     <div class="page" id="list-page">
-        <div class="search-box" id="list-search-box" style="gap: 10px;">
-            <input type="text" class="search-input" id="list-search-input" placeholder="搜索中文名、拉丁名、采集地点、纲、目、属、科..." style="flex: 1;">
-            <div class="filter-dropdown-wrapper">
-                <button class="btn btn-primary" id="list-filter-btn" style="width: 80px; padding: 0 12px;">筛选</button>
-                <div class="filter-dropdown" id="list-filter-dropdown">
-                    <div class="filter-dropdown-header">
-                        <span>科属筛选</span>
-                        <button class="filter-dropdown-close" id="list-filter-close">&times;</button>
-                    </div>
-                    <div class="filter-dropdown-body" id="list-filter-tree">
-                    </div>
-                    <div class="filter-dropdown-footer">
-                        <button class="btn btn-back" id="list-filter-clear">清除</button>
-                        <button class="btn btn-primary" id="list-filter-apply">确认</button>
+        <div class="search-box" id="list-search-box">
+            <div class="search-box-inner">
+                <input type="text" class="search-input" id="list-search-input" placeholder="搜索中文名、拉丁名、采集地点、纲、目、属、科..." style="flex: 1;">
+                <div class="filter-dropdown-wrapper">
+                    <button class="btn btn-primary" id="list-filter-btn" style="width: 80px; padding: 0 12px;">筛选</button>
+                    <div class="filter-dropdown" id="list-filter-dropdown">
+                        <div class="filter-dropdown-header">
+                            <span>科属筛选</span>
+                            <button class="filter-dropdown-close" id="list-filter-close">&times;</button>
+                        </div>
+                        <div class="filter-dropdown-body" id="list-filter-tree">
+                        </div>
+                        <div class="filter-dropdown-footer">
+                            <button class="btn btn-back" id="list-filter-clear">清除</button>
+                            <button class="btn btn-primary" id="list-filter-apply">确认</button>
+                        </div>
                     </div>
                 </div>
+                <button class="search-clear-btn" id="list-search-clear" style="display:none;">&times;</button>
             </div>
-            <button class="search-clear-btn" id="list-search-clear" style="display:none;">&times;</button>
         </div>
         <div class="card-list" id="card-list"></div>
         <div class="empty-state" id="empty-state">
@@ -1347,7 +1515,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
             <span>返回物种列表</span>
         </button>
-        <div id="species-title" style="margin-bottom:16px;font-weight:700;font-size:1.2rem;color:var(--green-800);"></div>
+        <div id="species-title" style="margin-bottom:14px;font-weight:500;font-size:1.15rem;color:var(--moss-800);"></div>
         <div class="card-list" id="species-card-list"></div>
         <div class="empty-state" id="species-empty-state" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6m-3-3v6m-9 4V5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
@@ -1404,6 +1572,57 @@
         <p class="map-hint">点击地图上的位置进行选择</p>
     </div>
 
+    <!-- Stats Page -->
+    <div class="page" id="stats-page">
+        <div class="stats-header">
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-value" id="stats-total-species">0</div>
+                    <div class="stat-label">总物种数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stats-total-records">0</div>
+                    <div class="stat-label">总记录数</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-map-container">
+            <div class="stats-map-header">
+                <span id="stats-map-title">全国分布</span>
+                <button id="stats-back-btn" class="btn btn-back" style="display: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    <span>返回全国</span>
+                </button>
+            </div>
+            <div class="stats-map-wrapper">
+                <div id="stats-echarts" style="width: 100%; height: 400px;"></div>
+            </div>
+            <div class="stats-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #E8F0E9;"></div>
+                    <span>0</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #A7BDAE;"></div>
+                    <span>较少</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #7D9E88;"></div>
+                    <span>中等</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #5A7D66;"></div>
+                    <span>较多</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3D5A45;"></div>
+                    <span>最多</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Confirm Dialog -->
     <div class="confirm-overlay" id="confirm-overlay">
         <div class="confirm-dialog">
@@ -1441,6 +1660,15 @@
             </svg>
             <span>地图</span>
         </button>
+        <button class="tab-item" data-page="stats-page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            <span>统计</span>
+        </button>
     </nav>
 
     <script>
@@ -1457,7 +1685,8 @@
             'list-page': document.getElementById('list-page'),
             'detail-page': document.getElementById('detail-page'),
             'map-page': document.getElementById('map-page'),
-            'species-page': document.getElementById('species-page')
+            'species-page': document.getElementById('species-page'),
+            'stats-page': document.getElementById('stats-page')
         };
 
         var currentRecord = null;
@@ -1524,18 +1753,70 @@
             });
         }
 
-        // Load records from localStorage
-        function loadRecords() {
+        // IndexedDB 存储实例（主存储）
+        var recordStore = localforage.createInstance({ name: 'snail_db_records' });
+        
+        // 数据已迁移标志
+        var MIGRATION_FLAG = 'snail_db_migrated_to_indexeddb';
+        
+        // 零风险双存储系统：优先使用 IndexedDB，同时保留 localStorage 作为备份
+        
+        // 从存储加载记录（优先 IndexedDB，降级到 localStorage）
+        async function loadRecords() {
             try {
-                var data = localStorage.getItem(STORAGE_KEY);
-                return data ? JSON.parse(data) : [];
-            } catch (e) {
+                // 首先尝试从 IndexedDB 读取
+                var records = await recordStore.getItem('records');
+                if (records && Array.isArray(records)) {
+                    return records;
+                }
+                
+                // IndexedDB 没有数据，尝试从 localStorage 读取并迁移
+                var localData = localStorage.getItem(STORAGE_KEY);
+                if (localData) {
+                    var localRecords = JSON.parse(localData);
+                    if (Array.isArray(localRecords)) {
+                        // 自动迁移到 IndexedDB
+                        await recordStore.setItem('records', localRecords);
+                        localStorage.setItem(MIGRATION_FLAG, '1');
+                        return localRecords;
+                    }
+                }
+                
                 return [];
+            } catch (e) {
+                console.error('loadRecords error:', e);
+                // IndexedDB 失败时降级到 localStorage
+                try {
+                    var data = localStorage.getItem(STORAGE_KEY);
+                    return data ? JSON.parse(data) : [];
+                } catch (e2) {
+                    return [];
+                }
             }
         }
 
-        function saveRecords(records) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+        // 保存记录（主存储为 IndexedDB，不强制备份到 localStorage）
+        async function saveRecords(records) {
+            try {
+                // 优先保存到 IndexedDB（主存储）
+                await recordStore.setItem('records', records);
+                // 尝试保存到 localStorage 作为备份，但如果失败（容量不足）也不影响
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+                } catch (localErr) {
+                    console.log('localStorage backup failed (likely quota exceeded), continuing with IndexedDB only');
+                    // 不抛出错误，因为 IndexedDB 已经成功保存
+                }
+            } catch (e) {
+                console.error('saveRecords error:', e);
+                // IndexedDB 失败时尝试降级到 localStorage
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+                } catch (localErr2) {
+                    // 如果两个存储都失败了，抛出原始错误
+                    throw e;
+                }
+            }
         }
 
         function generateId() {
@@ -1543,7 +1824,7 @@
         }
 
         // Page switching
-        function switchPage(pageName) {
+        async function switchPage(pageName) {
             Object.keys(pages).forEach(function(k) {
                 pages[k].classList.remove('active');
             });
@@ -1554,9 +1835,9 @@
             });
 
             if (pageName === 'list-page') {
-                renderList();
+                await renderList();
             } else if (pageName === 'map-page') {
-                initRecordMap();
+                await initRecordMap();
             }
         }
 
@@ -1567,7 +1848,7 @@
         var recordMarkersMap = {}; // 记录ID和对应标记的映射
 
         // Initialize record map
-        function initRecordMap() {
+        async function initRecordMap() {
             if (typeof AMap === 'undefined') {
                 return;
             }
@@ -1575,7 +1856,7 @@
             if (!mapInitialized) {
                 // 首次初始化地图
                 requestAnimationFrame(function() {
-                    requestAnimationFrame(function() {
+                    requestAnimationFrame(async function() {
                         try {
                             var satellite = new AMap.TileLayer.Satellite();
                             var roadNet = new AMap.TileLayer.RoadNet();
@@ -1589,17 +1870,17 @@
 
                             mapInitialized = true;
 
-                            recordMap.on('complete', function() {
+                            recordMap.on('complete', async function() {
                                 recordMap.resize();
-                                loadMarkersToMap();
+                                await loadMarkersToMap();
                             });
 
                             // 确保地图加载完成后再次调用 resize
-                            setTimeout(function() {
+                            setTimeout(async function() {
                                 recordMap && recordMap.resize();
                             }, 300);
 
-                            loadMarkersToMap();
+                            await loadMarkersToMap();
                         } catch (e) {
                             console.error('Map init error:', e);
                         }
@@ -1607,15 +1888,15 @@
                 });
             } else {
                 // 地图已初始化，重新加载标记并调整大小
-                setTimeout(function() {
+                setTimeout(async function() {
                     recordMap && recordMap.resize();
-                    loadMarkersToMap();
+                    await loadMarkersToMap();
                 }, 100);
             }
         }
 
         // Load markers from records
-        function loadMarkersToMap() {
+        async function loadMarkersToMap() {
             if (!recordMap) return;
 
             // 清除旧的标记
@@ -1625,7 +1906,7 @@
             }
             recordMarkersMap = {}; // 重置映射
 
-            var records = loadRecords();
+            var records = await loadRecords();
             var validRecords = records.filter(function(r) {
                 return r.lat && r.lng;
             });
@@ -1655,14 +1936,14 @@
             // 调整视野适应所有标记，防止被搜索框或Tab栏遮挡
             if (markerList.length > 0) {
                 setTimeout(function() {
-                    recordMap.setFitView(markerList, true, [140, 30, 140, 30]);
+                    recordMap.setFitView(markerList, true, [152, 30, 140, 30]);
                 }, 800);
             }
         }
 
         // 更新地图标记显示（用于搜索筛选时动态更新）
-        function updateMarkersBySearch() {
-            loadMarkersToMap();
+        async function updateMarkersBySearch() {
+            await loadMarkersToMap();
         }
 
         // Create marker for a record
@@ -1687,10 +1968,18 @@
             
             var iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgContent);
             
+            var icon = new AMap.Icon({
+                image: iconUrl,
+                size: new AMap.Size(28, 40),
+                imageSize: new AMap.Size(28, 40),
+                anchor: new AMap.Pixel(14, 40)
+            });
+            
             var marker = new AMap.Marker({
                 position: [record.lng, record.lat],
                 map: recordMap,
-                icon: iconUrl
+                icon: icon,
+                offset: new AMap.Pixel(0, -35)
             });
 
             var infoWindow = null;
@@ -1724,9 +2013,10 @@
 
                 infoWindow = new AMap.InfoWindow({
                     content: content,
-                    offset: new AMap.Pixel(0, -5),
+                    offset: new AMap.Pixel(14, -40),
                     closeWhenClickMap: true,
-                    autoMove: false
+                    autoMove: false,
+                    closeButton: false
                 });
 
                 infoWindow.open(recordMap, marker.getPosition());
@@ -1745,7 +2035,7 @@
                         if (!isVisible) return;
                         
                         var infoWinRect = infoWinEl.getBoundingClientRect();
-                        var topBarHeight = 110; // 顶部栏（标题+搜索框）高度
+                        var topBarHeight = 122; // 顶部栏（标题+搜索框）高度
                         
                         // 只检查信息窗顶部是否被搜索框遮挡
                         if (infoWinRect.top < topBarHeight) {
@@ -2015,10 +2305,10 @@
                     await imageStore.setItem(key, pendingImages[i]);
                 }
 
-                // Save text to localStorage
-                var records = loadRecords();
+                // Save text to storage (IndexedDB + localStorage)
+                var records = await loadRecords();
                 records.unshift(record);
-                saveRecords(records);
+                await saveRecords(records);
 
                 // Clear form
                 document.getElementById('add-form').reset();
@@ -2042,8 +2332,8 @@
         });
 
         // Render list - 聚合物种
-        function renderList() {
-            var records = loadRecords();
+        async function renderList() {
+            var records = await loadRecords();
             // 应用搜索筛选和科属筛选
             var filteredRecords = filterRecords(records, listSearchKeyword);
             filteredRecords = filteredRecords.filter(matchesFilter);
@@ -2069,10 +2359,10 @@
             speciesList.forEach(async function(species) {
                 var card = document.createElement('div');
                 card.className = 'card';
-                card.addEventListener('click', function() {
+                card.addEventListener('click', async function() {
                     lastPage = 'list-page';
                     currentInfoWindow = null;
-                    showSpeciesRecords(species);
+                    await showSpeciesRecords(species);
                 });
 
                 var thumbDiv = document.createElement('div');
@@ -2081,9 +2371,13 @@
                 var infoDiv = document.createElement('div');
                 infoDiv.className = 'card-info';
 
-                var titleDiv = document.createElement('div');
-                titleDiv.className = 'card-title';
-                titleDiv.textContent = species.chineseName + (species.latinName ? ' ' + species.latinName : '');
+                var chineseNameDiv = document.createElement('div');
+                chineseNameDiv.className = 'card-chinese-name';
+                chineseNameDiv.textContent = species.chineseName;
+
+                var latinNameDiv = document.createElement('div');
+                latinNameDiv.className = 'card-latin-name';
+                latinNameDiv.textContent = species.latinName || '拉丁名待完善';
 
                 var metaDiv = document.createElement('div');
                 metaDiv.className = 'card-meta';
@@ -2093,7 +2387,8 @@
                 arrowDiv.className = 'card-arrow';
                 arrowDiv.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>';
 
-                infoDiv.appendChild(titleDiv);
+                infoDiv.appendChild(chineseNameDiv);
+                infoDiv.appendChild(latinNameDiv);
                 infoDiv.appendChild(metaDiv);
                 card.appendChild(thumbDiv);
                 card.appendChild(infoDiv);
@@ -2196,9 +2491,9 @@
         }
 
         // 显示某个物种下的记录列表
-        function showSpeciesRecords(species) {
+        async function showSpeciesRecords(species) {
             currentSpecies = species;
-            switchPage('species-page');
+            await switchPage('species-page');
             renderSpeciesRecords(species);
         }
 
@@ -2350,13 +2645,13 @@
                         for (var j = 0; j < record.imageCount; j++) {
                             await imageStore.removeItem('img_' + record.id + '_' + j);
                         }
-                        // Delete from localStorage
-                        var records = loadRecords();
+                        // Delete from storage (IndexedDB + localStorage)
+                        var records = await loadRecords();
                         records = records.filter(function(r) { return r.id !== record.id; });
-                        saveRecords(records);
+                        await saveRecords(records);
 
                         showToast('已删除');
-                        switchPage('list-page');
+                        await switchPage('list-page');
                     } catch (e) {
                         showToast('删除失败: ' + e.message);
                     }
@@ -2368,6 +2663,8 @@
         var editPendingImages = [];
         var editPendingLat = null;
         var editPendingLng = null;
+        // 地图选点模式标志
+        var isMapPickerEditMode = false;
 
         // 设置编辑模式
         function setupEditMode(record) {
@@ -2567,6 +2864,8 @@
 
     // 打开编辑模式的地图选点
     function openEditMapModal() {
+        // 设置编辑模式标志
+        isMapPickerEditMode = true;
         openMapModal();
         
         // 确保标记点正确显示
@@ -2587,40 +2886,6 @@
                     mapInstance.setZoomAndCenter(15, [pickedLng, pickedLat]);
                 } catch (e) {}
             }, 300);
-        }
-        
-        // 保存原来的地图选点确认事件
-        var originalYesBtn = document.getElementById('btn-confirm-yes');
-        if (originalYesBtn) {
-            // 移除原有的事件监听器（通过克隆节点
-            var newYesBtn = originalYesBtn.cloneNode(true);
-            originalYesBtn.parentNode.replaceChild(newYesBtn, originalYesBtn);
-            
-            newYesBtn.addEventListener('click', function() {
-                // 更新编辑模式的经纬度
-                editPendingLat = pickedLat;
-                editPendingLng = pickedLng;
-                
-                // 更新输入框
-                var editLocationInput = document.getElementById('edit-location');
-                if (editLocationInput) {
-                    editLocationInput.value = pickedAddress;
-                }
-                
-                var editLatInput = document.getElementById('edit-lat');
-                if (editLatInput) {
-                    editLatInput.value = editPendingLat;
-                }
-                
-                var editLngInput = document.getElementById('edit-lng');
-                if (editLngInput) {
-                    editLngInput.value = editPendingLng;
-                }
-                
-                closeConfirm();
-                closeMapModal();
-                showToast('地址已更新');
-            });
         }
     }
 
@@ -2668,11 +2933,11 @@
             }
             
             // 更新记录
-            var records = loadRecords();
+            var records = await loadRecords();
             var index = records.findIndex(function(r) { return r.id === oldRecord.id; });
             if (index !== -1) {
                 records[index] = updatedRecord;
-                saveRecords(records);
+                await saveRecords(records);
             }
             
             currentRecord = updatedRecord;
@@ -2684,7 +2949,7 @@
     }
 
         // Back button - 详情页返回
-        document.getElementById('btn-back').addEventListener('click', function() {
+        document.getElementById('btn-back').addEventListener('click', async function() {
             // 如果有打开的信息窗，关闭它
             if (currentInfoWindow) {
                 currentInfoWindow.close();
@@ -2692,60 +2957,60 @@
             }
             // 根据来源页面决定跳转
             if (lastPage === 'map-page') {
-                switchPage('map-page');
+                await switchPage('map-page');
             } else if (lastPage === 'species-page') {
                 // 返回到物种记录页
-                showSpeciesRecords(currentSpecies);
+                await showSpeciesRecords(currentSpecies);
             } else {
-                switchPage('list-page');
+                await switchPage('list-page');
             }
         });
 
         // 物种页返回按钮
-        document.getElementById('btn-species-back').addEventListener('click', function() {
-            switchPage('list-page');
+        document.getElementById('btn-species-back').addEventListener('click', async function() {
+            await switchPage('list-page');
         });
 
         // 列表页搜索框相关事件
         var listSearchInput = document.getElementById('list-search-input');
         var listSearchClear = document.getElementById('list-search-clear');
 
-        listSearchInput.addEventListener('input', function() {
+        listSearchInput.addEventListener('input', async function() {
             listSearchKeyword = this.value;
             if (listSearchKeyword) {
                 listSearchClear.style.display = 'flex';
             } else {
                 listSearchClear.style.display = 'none';
             }
-            renderList();
+            await renderList();
         });
 
-        listSearchClear.addEventListener('click', function() {
+        listSearchClear.addEventListener('click', async function() {
             listSearchInput.value = '';
             listSearchKeyword = '';
             listSearchClear.style.display = 'none';
-            renderList();
+            await renderList();
         });
 
         // 地图页搜索框相关事件
         var mapSearchInput = document.getElementById('map-search-input');
         var mapSearchClear = document.getElementById('map-search-clear');
 
-        mapSearchInput.addEventListener('input', function() {
+        mapSearchInput.addEventListener('input', async function() {
             mapSearchKeyword = this.value;
             if (mapSearchKeyword) {
                 mapSearchClear.style.display = 'flex';
             } else {
                 mapSearchClear.style.display = 'none';
             }
-            updateMarkersBySearch();
+            await updateMarkersBySearch();
         });
 
-        mapSearchClear.addEventListener('click', function() {
+        mapSearchClear.addEventListener('click', async function() {
             mapSearchInput.value = '';
             mapSearchKeyword = '';
             mapSearchClear.style.display = 'none';
-            updateMarkersBySearch();
+            await updateMarkersBySearch();
         });
 
         // Image viewer
@@ -3051,58 +3316,87 @@
         });
 
         document.getElementById('btn-confirm-yes').addEventListener('click', function() {
-            document.getElementById('input-location').value = pickedAddress;
-            pendingLat = pickedLat;
-            pendingLng = pickedLng;
-            document.getElementById('input-lat').value = pickedLat;
-            document.getElementById('input-lng').value = pickedLng;
+            if (isMapPickerEditMode) {
+                // 编辑模式
+                editPendingLat = pickedLat;
+                editPendingLng = pickedLng;
+                
+                var editLocationInput = document.getElementById('edit-location');
+                if (editLocationInput) {
+                    editLocationInput.value = pickedAddress;
+                }
+                
+                var editLatInput = document.getElementById('edit-lat');
+                if (editLatInput) {
+                    editLatInput.value = editPendingLat;
+                }
+                
+                var editLngInput = document.getElementById('edit-lng');
+                if (editLngInput) {
+                    editLngInput.value = editPendingLng;
+                }
+                
+                showToast('地址已更新');
+            } else {
+                // 新增模式
+                document.getElementById('input-location').value = pickedAddress;
+                pendingLat = pickedLat;
+                pendingLng = pickedLng;
+                document.getElementById('input-lat').value = pickedLat;
+                document.getElementById('input-lng').value = pickedLng;
+                showToast('地址已覆盖');
+            }
+            
             closeConfirm();
             closeMapModal();
-            showToast('地址已覆盖');
+            // 重置模式标志
+            isMapPickerEditMode = false;
         });
 
         document.getElementById('btn-confirm-no').addEventListener('click', function() {
             pickedLat = null;
             pickedLng = null;
             pickedAddress = null;
+            isMapPickerEditMode = false;
             closeConfirm();
         });
 
         document.getElementById('confirm-overlay').addEventListener('click', function(e) {
             if (e.target === this) {
+                isMapPickerEditMode = false;
                 closeConfirm();
             }
         });
 
         // Tab switching
         document.querySelectorAll('.tab-item').forEach(function(tab) {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', async function() {
                 var pageName = this.dataset.page;
                 if (pages[pageName].classList.contains('active')) return;
                 closeFilterDropdown();
-                switchPage(pageName);
+                await switchPage(pageName);
             });
         });
 
         // List filter buttons
-        document.getElementById('list-filter-btn').addEventListener('click', function(e) {
+        document.getElementById('list-filter-btn').addEventListener('click', async function(e) {
             e.stopPropagation();
-            openFilterDropdown('list');
+            await openFilterDropdown('list');
         });
 
         document.getElementById('list-filter-close').addEventListener('click', closeFilterDropdown);
-        document.getElementById('list-filter-clear').addEventListener('click', function() { clearFilters('list'); });
-        document.getElementById('list-filter-apply').addEventListener('click', function() { applyFilters('list'); });
+        document.getElementById('list-filter-clear').addEventListener('click', async function() { await clearFilters('list'); });
+        document.getElementById('list-filter-apply').addEventListener('click', async function() { await applyFilters('list'); });
 
         // Map filter buttons
-        document.getElementById('map-filter-btn').addEventListener('click', function(e) {
+        document.getElementById('map-filter-btn').addEventListener('click', async function(e) {
             e.stopPropagation();
-            openFilterDropdown('map');
+            await openFilterDropdown('map');
         });
 
         document.getElementById('map-filter-close').addEventListener('click', closeFilterDropdown);
-        document.getElementById('map-filter-clear').addEventListener('click', function() { clearFilters('map'); });
-        document.getElementById('map-filter-apply').addEventListener('click', function() { applyFilters('map'); });
+        document.getElementById('map-filter-clear').addEventListener('click', async function() { await clearFilters('map'); });
+        document.getElementById('map-filter-apply').addEventListener('click', async function() { await applyFilters('map'); });
 
         // 点击其他地方关闭下拉框
         document.addEventListener('click', function(e) {
@@ -3133,8 +3427,8 @@
         // ===== Filter Functions =====
         
         // 构建科属树形数据
-        function buildFilterTree() {
-            var records = loadRecords();
+        async function buildFilterTree() {
+            var records = await loadRecords();
             var tree = {};
             
             records.forEach(function(record) {
@@ -3158,8 +3452,8 @@
         }
 
         // 渲染筛选树（指定容器）
-        function renderFilterTree(containerId) {
-            var tree = buildFilterTree();
+        async function renderFilterTree(containerId) {
+            var tree = await buildFilterTree();
             var container = document.getElementById(containerId);
             container.innerHTML = '';
             
@@ -3176,8 +3470,8 @@
                 familyCheck.type = 'checkbox';
                 familyCheck.id = containerId + '-family-' + item.name;
                 familyCheck.checked = selectedFilters.families.has(item.name);
-                familyCheck.addEventListener('change', function() {
-                    toggleFamily(item.name, item.genuses, this.checked, containerId);
+                familyCheck.addEventListener('change', async function() {
+                    await toggleFamily(item.name, item.genuses, this.checked, containerId);
                 });
                 
                 var familyLabel = document.createElement('label');
@@ -3205,8 +3499,8 @@
                     genusCheck.type = 'checkbox';
                     genusCheck.id = containerId + '-genus-' + item.name + '-' + genus;
                     genusCheck.checked = selectedFilters.genuses.has(item.name + '|' + genus);
-                    genusCheck.addEventListener('change', function() {
-                        toggleGenus(item.name, genus, this.checked, containerId);
+                    genusCheck.addEventListener('change', async function() {
+                        await toggleGenus(item.name, genus, this.checked, containerId);
                     });
                     
                     var genusLabel = document.createElement('label');
@@ -3247,7 +3541,7 @@
         }
 
         // 切换科的勾选
-        function toggleFamily(family, genuses, checked, containerId) {
+        async function toggleFamily(family, genuses, checked, containerId) {
             if (checked) {
                 selectedFilters.families.add(family);
                 genuses.forEach(function(genus) {
@@ -3259,11 +3553,11 @@
                     selectedFilters.genuses.delete(family + '|' + genus);
                 });
             }
-            renderFilterTree(containerId);
+            await renderFilterTree(containerId);
         }
 
         // 切换属的勾选
-        function toggleGenus(family, genus, checked, containerId) {
+        async function toggleGenus(family, genus, checked, containerId) {
             var key = family + '|' + genus;
             if (checked) {
                 selectedFilters.genuses.add(key);
@@ -3271,11 +3565,11 @@
                 selectedFilters.genuses.delete(key);
                 selectedFilters.families.delete(family);
             }
-            renderFilterTree(containerId);
+            await renderFilterTree(containerId);
         }
 
         // 打开筛选下拉框
-        function openFilterDropdown(pageType) {
+        async function openFilterDropdown(pageType) {
             var dropdownId = pageType === 'list' ? 'list-filter-dropdown' : 'map-filter-dropdown';
             var treeId = pageType === 'list' ? 'list-filter-tree' : 'map-filter-tree';
             
@@ -3283,7 +3577,7 @@
             document.getElementById('map-filter-dropdown').classList.remove('active');
             
             document.getElementById(dropdownId).classList.add('active');
-            renderFilterTree(treeId);
+            await renderFilterTree(treeId);
         }
 
         // 关闭所有筛选下拉框
@@ -3293,27 +3587,27 @@
         }
 
         // 清除筛选
-        function clearFilters(pageType) {
+        async function clearFilters(pageType) {
             selectedFilters.families.clear();
             selectedFilters.genuses.clear();
             isFilterActive = false;
             
             if (pageType === 'map') {
-                loadMarkersToMap();
+                await loadMarkersToMap();
             } else if (pageType === 'list') {
-                renderList();
+                await renderList();
             }
             closeFilterDropdown();
             showToast('筛选已清除');
         }
 
         // 应用筛选
-        function applyFilters(pageType) {
+        async function applyFilters(pageType) {
             isFilterActive = true;
             if (pageType === 'map') {
-                loadMarkersToMap();
+                await loadMarkersToMap();
             } else if (pageType === 'list') {
-                renderList();
+                await renderList();
             }
             closeFilterDropdown();
             showToast('筛选已应用');
@@ -3332,8 +3626,365 @@
             return selectedFilters.families.has(family) || selectedFilters.genuses.has(key);
         }
 
+        // ===== Stats Page Functions =====
+        var statsChart = null;
+        var statsCurrentLevel = 'country';
+        
+        var provinceNameMap = {
+            '北京': '北京', '天津': '天津', '河北': '河北', '山西': '山西', '内蒙古': '内蒙古',
+            '辽宁': '辽宁', '吉林': '吉林', '黑龙江': '黑龙江', '上海': '上海',
+            '江苏': '江苏', '浙江': '浙江', '安徽': '安徽', '福建': '福建', '江西': '江西',
+            '山东': '山东', '河南': '河南', '湖北': '湖北', '湖南': '湖南', '广东': '广东',
+            '广西': '广西', '海南': '海南', '重庆': '重庆', '四川': '四川', '贵州': '贵州',
+            '云南': '云南', '西藏': '西藏', '陕西': '陕西', '甘肃': '甘肃', '青海': '青海',
+            '宁夏': '宁夏', '新疆': '新疆', '台湾': '台湾'
+        };
+        
+        var drilableProvinces = ['北京', '上海', '广东', '江苏', '浙江', '四川', '湖北', '山东', '河南', '辽宁', '黑龙江'];
+        
+        function guessProvince(location) {
+            if (!location) return null;
+            var provinceMap = {
+                '北京': '北京', '天津': '天津', '河北': '河北', '山西': '山西', '内蒙古': '内蒙古',
+                '辽宁': '辽宁', '吉林': '吉林', '黑龙江': '黑龙江', '上海': '上海',
+                '江苏': '江苏', '浙江': '浙江', '安徽': '安徽', '福建': '福建', '江西': '江西',
+                '山东': '山东', '河南': '河南', '湖北': '湖北', '湖南': '湖南', '广东': '广东',
+                '广西': '广西', '海南': '海南', '重庆': '重庆', '四川': '四川', '贵州': '贵州',
+                '云南': '云南', '西藏': '西藏', '陕西': '陕西', '甘肃': '甘肃', '青海': '青海',
+                '宁夏': '宁夏', '新疆': '新疆', '台湾': '台湾'
+            };
+            for (var name in provinceMap) {
+                if (location.indexOf(name) !== -1) {
+                    return provinceMap[name];
+                }
+            }
+            return null;
+        }
+        
+        function guessCity(location) {
+            if (!location) return null;
+            var cities = ['北京', '上海', '广州', '深圳', '成都', '杭州', '南京', '武汉', '西安', '重庆',
+                         '天津', '苏州', '郑州', '长沙', '东莞', '佛山', '宁波', '青岛', '沈阳', '合肥',
+                         '哈尔滨', '长春', '大连', '厦门', '福州', '济南', '石家庄', '太原', '西安', '兰州'];
+            for (var i = 0; i < cities.length; i++) {
+                if (location.indexOf(cities[i]) !== -1) {
+                    return cities[i];
+                }
+            }
+            return null;
+        }
+        
+        async function getStatsData() {
+            var records = await loadRecords();
+            var speciesMap = {};
+            var provinceMap = {};
+            var cityMap = {};
+            
+            records.forEach(function(record) {
+                var speciesKey = getSpeciesKey(record.chineseName);
+                speciesMap[speciesKey] = (speciesMap[speciesKey] || 0) + 1;
+                
+                if (record.location) {
+                    var province = guessProvince(record.location);
+                    if (province) {
+                        provinceMap[province] = provinceMap[province] || { species: new Set(), records: 0 };
+                        provinceMap[province].species.add(speciesKey);
+                        provinceMap[province].records++;
+                        
+                        var city = guessCity(record.location);
+                        if (city && province) {
+                            var key = province + '|' + city;
+                            cityMap[key] = cityMap[key] || { species: new Set(), records: 0 };
+                            cityMap[key].species.add(speciesKey);
+                            cityMap[key].records++;
+                        }
+                    }
+                }
+            });
+            
+            return {
+                totalSpecies: Object.keys(speciesMap).length,
+                totalRecords: records.length,
+                provinceMap: provinceMap,
+                cityMap: cityMap
+            };
+        }
+        
+        function getColorByCount(count, maxCount) {
+            if (count === 0) return '#E8F0E9';
+            var ratio = count / maxCount;
+            if (ratio < 0.2) return '#A7BDAE';
+            if (ratio < 0.4) return '#7D9E88';
+            if (ratio < 0.6) return '#5A7D66';
+            return '#3D5A45';
+        }
+        
+        async function initStatsChart() {
+            try {
+                var chartDom = document.getElementById('stats-echarts');
+                if (!chartDom) {
+                    console.log('找不到图表DOM元素');
+                    return;
+                }
+                
+                if (!statsChart) {
+                    statsChart = echarts.init(chartDom);
+                }
+                
+                var stats = await getStatsData();
+                var mapData = [];
+                var maxCount = 0;
+                
+                // 获取统计数据
+                var allProvinces = [
+                    '北京', '天津', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江',
+                    '上海', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南',
+                    '湖北', '湖南', '广东', '广西', '海南', '重庆', '四川', '贵州',
+                    '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆', '台湾'
+                ];
+                
+                allProvinces.forEach(function(name) {
+                    var provinceData = stats.provinceMap[name];
+                    var count = provinceData ? provinceData.records : 0;
+                    mapData.push({ name: name, value: count });
+                    if (count > maxCount) maxCount = count;
+                });
+                
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function(params) {
+                            if (!params.data) return '';
+                            var provinceData = stats.provinceMap[params.name];
+                            var speciesCount = provinceData ? provinceData.species.size : 0;
+                            var recordCount = provinceData ? provinceData.records : 0;
+                            var tip = params.name + '<br/>';
+                            tip += '物种数: ' + speciesCount + '<br/>';
+                            tip += '记录数: ' + recordCount;
+                            return tip;
+                        },
+                        backgroundColor: 'rgba(61, 74, 63, 0.95)',
+                        borderColor: '#3D5A45',
+                        textStyle: {
+                            color: '#fff',
+                            fontSize: 12
+                        }
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: maxCount || 1,
+                        left: 'left',
+                        top: 'bottom',
+                        text: ['最多', '0'],
+                        inRange: {
+                            color: ['#E8F0E9', '#A7BDAE', '#7D9E88', '#5A7D66', '#3D5A45']
+                        },
+                        calculable: true,
+                        itemWidth: 15,
+                        itemHeight: 10,
+                        textStyle: {
+                            color: '#6B7470',
+                            fontSize: 10
+                        }
+                    },
+                    series: [{
+                        name: '记录数',
+                        type: 'map',
+                        map: 'china',
+                        roam: false,
+                        emphasis: {
+                            label: {
+                                show: true,
+                                color: '#fff'
+                            },
+                            itemStyle: {
+                                areaColor: '#7D9E88'
+                            }
+                        },
+                        itemStyle: {
+                            borderColor: '#9CA4A0',
+                            borderWidth: 0.5
+                        },
+                        data: mapData
+                    }]
+                };
+                
+                // 如果已经加载过地图数据，直接使用
+                if (window.chinaMapData) {
+                    echarts.registerMap('china', window.chinaMapData);
+                    statsChart.setOption(option);
+                    console.log('使用已加载的地图数据渲染图表');
+                    return;
+                }
+                
+                // 从DataV CDN获取中国地图数据
+                fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('地图数据加载失败');
+                        }
+                        return response.json();
+                    })
+                    .then(function(mapData) {
+                        window.chinaMapData = mapData;
+                        echarts.registerMap('china', mapData);
+                        statsChart.setOption(option);
+                        console.log('成功加载DataV地图数据，渲染完成');
+                    })
+                    .catch(function(error) {
+                        console.error('加载地图数据失败:', error);
+                        // 降级：使用简单矩形显示
+                        statsChart.setOption({
+                            title: {
+                                text: '地图加载失败，请刷新重试',
+                                left: 'center',
+                                top: 'center',
+                                textStyle: {
+                                    color: '#999',
+                                    fontSize: 14
+                                }
+                            }
+                        });
+                    });
+                    
+            } catch (error) {
+                console.error('初始化统计图表出错:', error);
+            }
+        }
+        
+        async function renderCityChart(provinceName) {
+            var chartDom = document.getElementById('stats-echarts');
+            if (!chartDom) return;
+            
+            var mapNameMap = {
+                '北京': '北京', '上海': '上海', '广东': '广东', '江苏': '江苏', 
+                '浙江': '浙江', '四川': '四川', '湖北': '湖北', '山东': '山东', 
+                '河南': '河南', '辽宁': '辽宁', '黑龙江': '黑龙江'
+            };
+            
+            var mapName = mapNameMap[provinceName];
+            if (!mapName) return;
+            
+            var stats = await getStatsData();
+            var mapData = [];
+            var maxCount = 0;
+            
+            var cities = ['北京', '上海', '广州', '深圳', '珠海', '汕头', '佛山', '韶关', '湛江', '成都', '自贡', '攀枝花', '泸州', '德阳', '绵阳',
+                         '杭州', '宁波', '温州', '嘉兴', '湖州', '绍兴', '金华', '南京', '苏州', '无锡', '常州', '镇江', '扬州', '泰州',
+                         '武汉', '黄石', '十堰', '宜昌', '襄阳', '鄂州', '济南', '青岛', '淄博', '枣庄', '东营', '烟台',
+                         '郑州', '开封', '洛阳', '平顶山', '安阳', '鹤壁', '沈阳', '大连', '鞍山', '抚顺', '本溪', '丹东',
+                         '哈尔滨', '齐齐哈尔', '鸡西', '鹤岗', '双鸭山', '大庆'];
+            
+            cities.forEach(function(city) {
+                var key = provinceName + '|' + city;
+                var cityStats = stats.cityMap[key];
+                if (cityStats) {
+                    mapData.push({ name: city, value: cityStats.records });
+                    if (cityStats.records > maxCount) maxCount = cityStats.records;
+                }
+            });
+            
+            if (maxCount === 0) maxCount = 1;
+            
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        if (!params.data) return '';
+                        var key = provinceName + '|' + params.name;
+                        var cityStats = stats.cityMap[key];
+                        var speciesCount = cityStats ? cityStats.species.size : 0;
+                        return params.name + '<br/>物种数: ' + speciesCount + '<br/>记录数: ' + params.value;
+                    },
+                    backgroundColor: 'rgba(61, 74, 63, 0.95)',
+                    borderColor: '#3D5A45',
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 12
+                    }
+                },
+                visualMap: {
+                    min: 0,
+                    max: maxCount,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['最多', '0'],
+                    inRange: {
+                        color: ['#E8F0E9', '#A7BDAE', '#7D9E88', '#5A7D66', '#3D5A45']
+                    },
+                    calculable: true,
+                    itemWidth: 15,
+                    itemHeight: 10,
+                    textStyle: {
+                        color: '#6B7470',
+                        fontSize: 10
+                    }
+                },
+                series: [{
+                    name: '记录数',
+                    type: 'map',
+                    map: mapName,
+                    roam: false,
+                    emphasis: {
+                        label: {
+                            show: true,
+                            color: '#fff'
+                        },
+                        itemStyle: {
+                            areaColor: '#7D9E88'
+                        }
+                    },
+                    itemStyle: {
+                        borderColor: '#9CA4A0',
+                        borderWidth: 0.5
+                    },
+                    data: mapData
+                }]
+            };
+            
+            statsChart.setOption(option, true);
+            
+            document.getElementById('stats-map-title').textContent = provinceName + '分布';
+            document.getElementById('stats-back-btn').style.display = 'flex';
+        }
+        
+        async function backToCountry() {
+            statsCurrentLevel = 'country';
+            document.getElementById('stats-map-title').textContent = '全国分布';
+            document.getElementById('stats-back-btn').style.display = 'none';
+            await initStatsChart();
+        }
+        
+        document.getElementById('stats-back-btn').addEventListener('click', backToCountry);
+        
+        var originalSwitchPage = switchPage;
+        switchPage = async function(pageName) {
+            await originalSwitchPage(pageName);
+            if (pageName === 'stats-page') {
+                statsCurrentLevel = 'country';
+                document.getElementById('stats-back-btn').style.display = 'none';
+                document.getElementById('stats-map-title').textContent = '全国分布';
+                
+                var stats = await getStatsData();
+                document.getElementById('stats-total-species').textContent = stats.totalSpecies;
+                document.getElementById('stats-total-records').textContent = stats.totalRecords;
+                
+                setTimeout(function() {
+                    initStatsChart();
+                    // 确保窗口大小改变时图表也能适应
+                    window.addEventListener('resize', function() {
+                        if (statsChart) {
+                            statsChart.resize();
+                        }
+                    });
+                }, 100);
+            }
+        };
+        
         // Initial: show add page
-        switchPage('add-page');
+        (async function() {
+            await originalSwitchPage('add-page');
+        })();
     })();
     </script>
 </body>
